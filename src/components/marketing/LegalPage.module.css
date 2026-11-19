@@ -1,0 +1,141 @@
+/*
+ * The legal pages, and only the legal pages.
+ *
+ * These two documents are the one place on the site with real running prose:
+ * a heading every few paragraphs, lists, and a measure that has to stay
+ * readable for several screens. The `mk-` layer in globals.css owns the type
+ * scale and is shared; the rhythm BETWEEN those elements is local to this
+ * shape, so it lives here rather than growing the global sheet.
+ *
+ * Every value is a Meridian token. There is no raw colour and no raw size, so
+ * both themes and both densities follow without a second palette.
+ */
+
+.header {
+  border-bottom: 1px solid var(--border-default);
+  padding-bottom: var(--space-8);
+  margin-bottom: var(--space-10);
+}
+
+.title {
+  margin-top: var(--space-3);
+}
+
+.lede {
+  margin-top: var(--space-5);
+  margin-bottom: 0;
+}
+
+/* The last-updated line is a measured value, so the date itself is mono via
+   .mk-measured; the label around it is prose and stays in the sans face. */
+.updated {
+  margin: var(--space-6) 0 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+/* One honest note at the top of each document, not a banner and not a shout:
+   a sunken card with a brand-side rule, which is the accent doing structural
+   work rather than decoration. */
+.note {
+  margin: 0 0 var(--space-10);
+  padding: var(--space-5) var(--space-6);
+  background: var(--surface-sunken);
+  border-left: 3px solid var(--brand-500);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.note p {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+  max-width: none;
+}
+
+.note p + p {
+  margin-top: var(--space-3);
+}
+
+/* --- Document body -------------------------------------------------------- */
+
+.section {
+  margin-top: var(--space-12);
+  scroll-margin-top: var(--space-16);
+}
+
+.section:first-of-type {
+  margin-top: 0;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-4);
+}
+
+.subheading {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-md);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+  margin: var(--space-6) 0 var(--space-2);
+}
+
+/* The list is set to the same face, measure and leading as .mk-prose, so a
+   list reads as part of the sentence that introduced it. It is declared before
+   the adjacency rules below purely so specificity ascends down the file. */
+.list {
+  margin: 0;
+  padding-left: var(--space-6);
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+  max-width: 68ch;
+}
+
+.list li + li {
+  margin-top: var(--space-3);
+}
+
+.list li::marker {
+  color: var(--text-muted);
+}
+
+/* Paragraphs and lists inside a section share one vertical rhythm. */
+.section :global(.mk-prose) {
+  margin-block: 0;
+}
+
+.section :global(.mk-prose) + :global(.mk-prose),
+.section :global(.mk-prose) + .list,
+.section .list + :global(.mk-prose) {
+  margin-top: var(--space-4);
+}
+
+/* --- Placeholder ---------------------------------------------------------- */
+
+/* A real-world detail nobody has given us yet. It is deliberately loud: a
+   legal document that ships with an invented address is worse than one that
+   ships with a visible hole, and this makes the hole impossible to miss in
+   review. Warning tone, because that is a status, which is the only thing the
+   status colours are allowed to be. */
+.placeholder {
+  background: transparent;
+  color: var(--warning-600);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  font-weight: var(--weight-medium);
+  border: 1px dashed var(--warning-600);
+  border-radius: var(--radius-sm);
+  padding: 1px var(--space-2);
+  white-space: nowrap;
+}

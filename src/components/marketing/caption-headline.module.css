@@ -1,0 +1,66 @@
+/*
+ * Caption-set headline for the hero.
+ *
+ * Two word treatments, exactly like the product's captions:
+ *   .word — plain caption text
+ *   .box  — the one word held in a caption box (the product's highlight)
+ *
+ * The sequence only runs when .armed is present (added after mount, and never
+ * under prefers-reduced-motion), so the server-rendered frame is the finished
+ * one and the animation is a progressive treat.
+ */
+
+.headline {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-display);
+  /* The Efolusi hero scale: 38px on a phone, 60px at 1440. */
+  font-size: clamp(38px, 4.2vw, 60px);
+  line-height: 1.12;
+  max-width: 720px;
+  text-wrap: balance;
+  color: var(--text-primary);
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.28em;
+  row-gap: 0.08em;
+}
+
+.word,
+.box {
+  display: inline-block;
+}
+
+.box {
+  /* Fixed ramp values, the same in both themes: brand-300 with brand-950 ink
+     measures 9.6:1, and the box reads as a caption on either page colour. */
+  color: var(--brand-950);
+  background: var(--brand-300);
+  border-radius: 0.18em;
+  padding: 0 0.16em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The sequence: every word starts as a dim caption and brightens on its beat.
+   Forwards fill keeps the final frame; the stagger is the reading rhythm. */
+.armed .word,
+.armed .box {
+  opacity: 0.22;
+  animation: caption-on 0.36s ease-out forwards;
+  animation-delay: calc(var(--beat) * 130ms + 200ms);
+}
+
+@keyframes caption-on {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .armed .word,
+  .armed .box {
+    opacity: 1;
+    animation: none;
+  }
+}

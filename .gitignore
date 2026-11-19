@@ -1,0 +1,50 @@
+node_modules/
+dist/
+.next/
+out/
+coverage/
+.turbo/
+*.tsbuildinfo
+# Written by scripts/stamp-release.mjs during a native build; read by /healthz.
+/release.json
+
+.env
+.env.*
+!.env.example
+# Production env TEMPLATE (no values, only key names and guidance). The deploy
+# scripts and the ops runbook both reference it, so it has to be in the repo;
+# the .env.* rule above would otherwise swallow it.
+!.env.prod.example
+
+.DS_Store
+*.log
+npm-debug.log*
+
+# Local media scratch, never commit sample video
+tmp/
+scratch/
+spikes/**/fixtures/*
+!spikes/**/fixtures/.gitkeep
+spikes/**/out/
+
+# Python virtualenvs and downloaded ONNX models (fetched via spikes/vision/setup.sh)
+**/.venv/
+venv/
+__pycache__/
+*.pyc
+spikes/vision/models/
+
+# Batch render working dirs
+spikes/pipeline/out-full/
+
+# Remotion demo/benchmark fixtures — generated, not source (see render-templates README)
+packages/render-templates/public/*.mp4
+
+# OpenNext/Wrangler build output (local deploys)
+.open-next/
+.wrangler/
+
+# OpenNext and wrangler
+.open-next/
+.wrangler/
+.dev.vars

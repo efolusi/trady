@@ -1,0 +1,1902 @@
+/*
+ * Layout only. Meridian owns every colour, radius, font and control; this file
+ * owns page structure, which a component library deliberately does not.
+ *
+ * Everything here reads from Meridian's tokens rather than declaring values, so
+ * the two themes and the two densities stay consistent without a second palette.
+ */
+
+/* Ink for the bare logo mark: dark brand on light, light brand on dark. */
+:root {
+  --logo-mark: var(--brand-800);
+}
+
+[data-theme="dark"] {
+  --logo-mark: var(--brand-300);
+}
+
+.page {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4) var(--space-16);
+}
+
+.stack {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.stack-sm {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.stack-lg {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.grow {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.muted {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Auto-fitting card grid: one column on a phone, more as room appears. No
+   breakpoint list to keep in sync with a design that will change. */
+.card-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+}
+
+.split {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  align-items: start;
+}
+
+/* minmax(0, …) only lets the track shrink; the item still refuses to go below
+   its own min-content. Without this a long URL in a detail card widens the
+   column past the page and the whole document scrolls sideways. */
+.split > * {
+  min-width: 0;
+}
+
+@media (max-width: 860px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* `overflow-wrap: break-word` wraps but does NOT reduce intrinsic min-content
+   width, so it cannot stop an unbroken URL from stretching its container.
+   `anywhere` does, which is the whole reason this class exists. */
+.break {
+  overflow-wrap: anywhere;
+}
+
+/* The top bar is a fixed-height flex row that cannot wrap, so on a phone the
+   status chips have to give way rather than push the theme control off screen.
+   Both are reachable: the balance is on /usage, one tap away in the nav below. */
+/* Doubled selectors on purpose. Meridian injects its component CSS into a style
+   tag at runtime, so it lands after this stylesheet and a single-class utility
+   loses the cascade to `.ef-badge { display: inline-flex }`. */
+@media (max-width: 660px) {
+  .hide-sm.hide-sm {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .hide-xs.hide-xs {
+    display: none;
+  }
+}
+
+/* Counterpart to .hide-sm: the phone-only theme cycle button. Hidden wherever
+   the segmented control is visible, shown where it is not. */
+.show-sm.show-sm {
+  display: none;
+}
+
+/* Counterpart to .hide-xs, for phone-only inline swaps. */
+.show-xs.show-xs {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .show-xs.show-xs {
+    display: inline;
+  }
+}
+
+.theme-cycle {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  background: var(--surface-card);
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 660px) {
+  .show-sm.show-sm {
+    display: inline-flex;
+  }
+}
+
+/* --- Account menu: everything about "you" behind one avatar ------------- */
+
+.account-menu {
+  position: relative;
+  display: inline-flex;
+}
+
+.account-menu__trigger {
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: var(--radius-full);
+  padding: 2px;
+  cursor: pointer;
+  display: inline-flex;
+}
+
+.account-menu__trigger:hover {
+  border-color: var(--border-default);
+}
+
+.account-menu__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 40;
+  min-width: 220px;
+  padding: var(--space-2);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  background: var(--surface-card);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.16);
+  display: grid;
+  gap: 2px;
+}
+
+.account-menu__who {
+  display: grid;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  border-bottom: 1px solid var(--border-default);
+  margin-bottom: var(--space-2);
+}
+
+.account-menu__who span {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+
+.account-menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--text-sm);
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.account-menu__item:hover {
+  background: var(--surface-sunken);
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--border-default);
+  background: var(--surface-page);
+  overflow-x: auto;
+}
+
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.nav a[aria-current="page"] {
+  background: var(--accent-subtle);
+  color: var(--text-primary);
+}
+
+/* The skip link's target. It takes focus so the next Tab starts inside the
+   content, but a ring around the whole page body would read as a bug. */
+main[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* Visible only to assistive technology. Used for the live region that announces
+   pipeline progress, which otherwise changes silently. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: var(--surface-sunken);
+}
+
+.clip-video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #000;
+  border-radius: var(--radius-md);
+}
+
+/* ==========================================================================
+   Marketing layer, everything below is prefixed `mk-`
+   ==========================================================================
+
+   The signed-out site needs a typographic register the app screens do not: a
+   display scale that runs to 76px, a reading measure, and a mono treatment that
+   means something. None of it replaces Meridian. Every declaration below reads
+   a Meridian token; there is not a raw colour in this section, and the two
+   themes keep working because the tokens remap, not these rules.
+
+   Three rules the page agents inherit:
+
+   1. MONO IS SEMANTIC. `.mk-measured` marks a value a machine measured:
+      timecodes, durations, scores, credit seconds, counts. Prose is never mono.
+      `.mk-eyebrow` is the one decorative exception, and it is a label, not a
+      sentence.
+   2. THE ACCENT IS RATIONED. The caramel ramp appears on the selection
+      timeline's moments and on the single primary CTA (Meridian's
+      `<Button variant="brand">`, which is --brand-700 so its white label clears
+      contrast). Nowhere else. Status colours stay for status.
+   3. NOTHING ANIMATES except the timeline's one reveal, plus ordinary hover and
+      focus transitions.
+
+   The `mk-` prefix keeps these off Meridian's `ef-` namespace and off the app
+   utilities above, which matters: Meridian injects components.css at runtime,
+   so it lands after this file and wins any single-class tie. Do not put `mk-`
+   classes on a Meridian component's own element; put them on your own.
+   -------------------------------------------------------------------------- */
+
+/* --- Display scale -------------------------------------------------------- */
+
+/* Tight leading is the point of the display face: it makes a two line headline
+   read as one object rather than two stacked lines. The clamps bottom out at a
+   token value that still fits 360px, so no size needs a breakpoint. */
+.mk-display-xl,
+.mk-display-lg,
+.mk-display-md {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  letter-spacing: var(--tracking-display);
+  color: var(--text-primary);
+  margin: 0;
+  /* Progressive: browsers without it fall back to normal wrapping, which is
+     merely less even, not broken. */
+  text-wrap: balance;
+}
+
+.mk-display-xl {
+  font-size: clamp(var(--text-4xl), 7.4vw, var(--text-7xl));
+  line-height: var(--leading-tight);
+}
+
+.mk-display-lg {
+  font-size: clamp(var(--text-3xl), 4.6vw, var(--text-5xl));
+  line-height: var(--leading-tight);
+}
+
+/* Snug rather than tight: at 18-26px, 1.05 sets ascenders into descenders. The
+   tight leading earns its keep above ~30px and nowhere below it. */
+.mk-display-md {
+  font-size: clamp(var(--text-xl), 2.6vw, var(--text-3xl));
+  line-height: var(--leading-snug);
+}
+
+/* --- Reading scale -------------------------------------------------------- */
+
+/* The one paragraph under a headline. Wider than body, still a measure. */
+.mk-lede {
+  font-family: var(--font-sans);
+  font-size: clamp(var(--text-lg), 1.6vw, var(--text-xl));
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+  max-width: 60ch;
+  text-wrap: pretty;
+}
+
+/* Body copy. --text-secondary on --surface-page measures 6.9:1. */
+.mk-prose {
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+  max-width: 68ch;
+}
+
+/* --- Measured values and labels ------------------------------------------- */
+
+/* JetBrains Mono runs optically larger than Figtree at the same px, so it is
+   set back slightly to sit level with the sentence around it. Tabular figures
+   because these are numbers in a column as often as not. */
+.mk-measured {
+  font-family: var(--font-mono);
+  font-size: 0.94em;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.mk-eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* --- Layout primitives ---------------------------------------------------- */
+
+/* One vertical rhythm for the whole site. Sections carry their own padding
+   rather than margins so a tonal band's colour reaches the full gap. */
+.mk-section {
+  padding-block: clamp(var(--space-16), 6vw, var(--space-24));
+}
+
+.mk-section--sunken {
+  background: var(--surface-sunken);
+}
+
+.mk-section--inverse {
+  background: var(--surface-inverse);
+  color: var(--text-inverse);
+}
+
+/* Meridian's base sheet colours headings from --text-primary, which is the ink
+   of the *page*. On the inverse band that is invisible, so the band restates it
+   for the elements that set it explicitly. */
+.mk-section--inverse .mk-display-xl,
+.mk-section--inverse .mk-display-lg,
+.mk-section--inverse .mk-display-md {
+  color: var(--text-inverse);
+}
+
+.mk-section--inverse .mk-lede,
+.mk-section--inverse .mk-prose,
+.mk-section--inverse .mk-eyebrow {
+  color: var(--text-inverse-muted);
+}
+
+/* --text-link is a brand-700 sized for a light page; on the inverse band it is
+   an unreadable 1.6:1. Stated here so a link dropped into a closing band cannot
+   ship broken. */
+.mk-section--inverse a:not(.mk-btn) {
+  color: var(--brand-200);
+}
+
+.mk-section--inverse a:not(.mk-btn):hover {
+  color: var(--brand-100);
+}
+
+.mk-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: clamp(var(--space-4), 4vw, var(--space-8));
+}
+
+/* For running prose: 720px, Meridian's own reading measure. */
+.mk-container--text {
+  max-width: var(--container-text);
+}
+
+/* --- Link that looks like a button ---------------------------------------- */
+
+/* Meridian's Button renders a <button> and takes no `as` prop, so a call to
+   action that NAVIGATES has to be a real anchor: middle click, open in a new
+   tab, and the browser's own status bar preview all matter more on a landing
+   page than reusing the component would. Sizes and radii come from the same
+   control tokens ef-btn uses, so the two sit level side by side.
+   Use a <button> and Meridian's Button for anything that acts rather than
+   navigates. */
+.mk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--control-h-md);
+  padding-inline: var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.mk-btn:hover {
+  text-decoration: none;
+}
+
+.mk-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* The rationed accent. One of these per view: the header carries it on the
+   signed-out site, so a hero below it uses --quiet, not a second brand fill.
+   --brand-700 rather than the timeline's --brand-500 because a white label on
+   --brand-500 measures 2.9:1. Same ramp, the end of it that reads. */
+.mk-btn--brand {
+  background: var(--brand-700);
+  color: var(--text-on-brand);
+}
+
+.mk-btn--brand:hover {
+  background: var(--brand-800);
+  color: var(--text-on-brand);
+}
+
+.mk-btn--quiet {
+  color: var(--text-secondary);
+}
+
+.mk-btn--quiet:hover {
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+}
+
+.mk-btn--outline {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.mk-btn--outline:hover {
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+}
+
+.mk-btn--lg {
+  height: var(--control-h-lg);
+  padding-inline: var(--space-5);
+  font-size: var(--text-lg);
+}
+
+/* --- Marketing shell ------------------------------------------------------ */
+
+/* Deliberately NOT Meridian's TopNav. TopNav is the signed-in app frame: it
+   carries the credit balance, the tenant and sign out. A stranger has none of
+   those, so the signed-out header is its own element with three things in it. */
+.mk-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  border-bottom: 1px solid var(--border-default);
+  /* Opaque, not translucent: content scrolls under it and a blur is one more
+     thing to animate. */
+  background: var(--surface-page);
+}
+
+.mk-header__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: var(--space-16);
+  padding-block: var(--space-3);
+}
+
+/* Site nav sits between the wordmark and the actions. Same quiet weight as
+   the footer links; the page you are on is not a button. */
+.mk-header__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-inline-start: var(--space-4);
+}
+
+.mk-header__nav a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: var(--text-sm);
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.mk-header__nav a:hover {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.mk-header__lang {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+.mk-header__lang:hover {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.mk-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+}
+
+/* On a phone the header row cannot wrap, and at 375px the full-size wordmark,
+   nav link and both buttons added to ~453px — the whole page scrolled sideways.
+   Every piece stays reachable; each just gives up a little width. Doubled
+   selectors for the same cascade reason as .hide-xs above. */
+/* The bare logo mark: no tile, so the ink follows the theme via --logo-mark
+   (brand-800 on light, brand-300 on dark). Sized inline by the component; the
+   glyph keeps a square mark's visual area despite being wide, so it never
+   stretches. */
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  color: var(--logo-mark);
+}
+
+.brand-mark__glyph {
+  display: block;
+  fill: currentColor;
+}
+
+@media (max-width: 480px) {
+  .mk-header__inner.mk-header__inner {
+    gap: var(--space-2);
+  }
+
+  .mk-header__nav.mk-header__nav {
+    margin-inline-start: 0;
+    gap: var(--space-2);
+  }
+
+  .mk-header__actions.mk-header__actions {
+    gap: var(--space-1);
+  }
+
+  .mk-header__lang.mk-header__lang {
+    min-width: 32px;
+    padding: 0 6px;
+  }
+
+  .mk-header .mk-btn {
+    padding-inline: var(--space-3);
+    font-size: var(--text-sm);
+  }
+
+  .mk-wordmark.mk-wordmark {
+    font-size: var(--text-xl);
+    gap: 6px;
+  }
+
+  /* 22px mark box (never smaller): width = 22*sqrt(1.592), height = 22/sqrt(1.592). */
+  .mk-wordmark.mk-wordmark .brand-mark__glyph {
+    width: 27.76px;
+    height: 17.44px;
+  }
+}
+
+.mk-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--text-2xl);
+  letter-spacing: var(--tracking-display);
+  line-height: 1;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.mk-wordmark:hover {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.mk-wordmark:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+.mk-footer {
+  border-top: 1px solid var(--border-default);
+  background: var(--surface-page);
+  padding-block: var(--space-12);
+}
+
+.mk-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-8);
+}
+
+.mk-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mk-footer__note {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  margin: 0;
+}
+
+/* --- Efolusi flagship conformance (signed-out site only) ------------------ */
+
+/* Everything below is scoped to `.mk-site`, the wrapper MarketingShell puts
+   around the header, main and footer. The signed-in app shares this file and
+   keeps Meridian's defaults; the public site follows the Efolusi landing
+   standard that efolusi.com sets:
+
+     container 1200 max, 24px gutter at every width
+     header    64px exactly, border folded inside
+     buttons   52 (lg) / 40 (sm) / 36 (icon), height locked, never padding-driven
+     radii     8 / 12 / 16 / 24 / 999
+     sections  clamp(64px, 9vh, 96px), separated by a 1px rule, brown band at
+               most twice
+
+   No colour token is remapped. Colours are Meridian's semantic tokens, so the
+   dark theme follows without a second palette. */
+.mk-site {
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --nav-h: 64px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+@supports (min-height: 100dvh) {
+  .mk-site {
+    min-height: 100dvh;
+  }
+}
+
+.mk-site > main {
+  flex: 1 0 auto;
+}
+
+html:has(.mk-site) {
+  scroll-padding-top: calc(var(--nav-h, 64px) + 16px);
+}
+
+.mk-site .mk-container {
+  padding-inline: 24px;
+}
+
+/* --- Type ------------------------------------------------------------------ */
+
+.mk-site .mk-display-xl {
+  font-size: clamp(38px, 4.2vw, 60px);
+  font-weight: var(--weight-bold);
+  line-height: 1.12;
+}
+
+.mk-site .mk-display-lg {
+  font-size: clamp(28px, 3.4vw, 40px);
+  line-height: 1.25;
+}
+
+.mk-site .mk-lede {
+  font-size: var(--text-xl);
+  line-height: 1.65;
+  max-width: 560px;
+}
+
+.mk-site .mk-prose {
+  font-size: var(--text-lg);
+  line-height: 1.65;
+  max-width: 560px;
+  text-wrap: pretty;
+}
+
+.mk-site .mk-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: var(--weight-semibold);
+  line-height: 15px;
+  letter-spacing: 0.06em;
+}
+
+/* --- Sections -------------------------------------------------------------- */
+
+.mk-site .mk-section {
+  padding-block: clamp(64px, 9vh, 96px);
+}
+
+/* A hairline, not an alternating fill, separates one band from the next. */
+.mk-site .mk-section--rule {
+  border-top: 1px solid var(--border-default);
+}
+
+/* The brown band. --surface-brand is brand-900 in light and brand-950 in dark,
+   and the ink on it is fixed cream in both. */
+.mk-site .mk-section--brand {
+  background: var(--surface-brand);
+  color: var(--cream-50);
+}
+
+.mk-site .mk-section--brand .mk-display-xl,
+.mk-site .mk-section--brand .mk-display-lg,
+.mk-site .mk-section--brand .mk-display-md {
+  color: var(--cream-50);
+}
+
+.mk-site .mk-section--brand .mk-lede,
+.mk-site .mk-section--brand .mk-prose,
+.mk-site .mk-section--brand .mk-eyebrow {
+  color: var(--text-on-brand-muted);
+}
+
+/* --- Buttons ---------------------------------------------------------------- */
+
+/* Height is set, not grown from padding and line-height, and the 1px border
+   sits inside it. An <a> and a <button> with these classes render the same
+   integer height. */
+.mk-site .mk-btn {
+  box-sizing: border-box;
+  height: 40px;
+  padding: 0 20px;
+  gap: 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: var(--weight-semibold);
+  line-height: 21px;
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.mk-site .mk-btn--lg {
+  height: 52px;
+  padding: 0 24px;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.mk-site .mk-btn:active {
+  transform: scale(0.985);
+}
+
+.mk-site .mk-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--surface-card),
+    0 0 0 4px var(--focus-ring-color);
+}
+
+.mk-site .mk-btn svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+/* The one filled call to action: --accent (#2C1709 light, #F3EFE7 dark).
+   `a.` because Meridian's link colour would otherwise leak into the label. */
+.mk-site a.mk-btn--primary,
+.mk-site .mk-btn--primary {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.mk-site a.mk-btn--primary:hover,
+.mk-site .mk-btn--primary:hover {
+  background: var(--accent-hover);
+  color: var(--accent-contrast);
+}
+
+.mk-site a.mk-btn--outline,
+.mk-site .mk-btn--outline {
+  background: transparent;
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.mk-site a.mk-btn--outline:hover,
+.mk-site .mk-btn--outline:hover {
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+}
+
+/* Sign in: a card-coloured pill with a hairline. */
+.mk-site a.mk-btn--quiet,
+.mk-site .mk-btn--quiet {
+  background: var(--surface-card);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+
+.mk-site a.mk-btn--quiet:hover,
+.mk-site .mk-btn--quiet:hover {
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+}
+
+/* Cream pill on the brown band. Hover goes to white, not --surface-card, which
+   is dark brown in the dark theme and would swallow the label. */
+.mk-site a.mk-btn--cream,
+.mk-site .mk-btn--cream {
+  background: var(--cream-50);
+  color: var(--brand-950);
+}
+
+.mk-site a.mk-btn--cream:hover,
+.mk-site .mk-btn--cream:hover {
+  background: #ffffff;
+  color: var(--brand-950);
+}
+
+.mk-site .mk-section--brand .mk-btn:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--surface-brand),
+    0 0 0 4px var(--cream-50);
+}
+
+/* The text-link secondary action, ending in an arrow. */
+.mk-site .mk-textlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  height: 52px;
+  padding: 0 8px;
+  border-radius: 999px;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: var(--weight-semibold);
+  line-height: 24px;
+  text-decoration: none;
+}
+
+.mk-site .mk-textlink:hover {
+  color: var(--text-link);
+  text-decoration: none;
+}
+
+.mk-site .mk-textlink:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--surface-page),
+    0 0 0 4px var(--focus-ring-color);
+}
+
+.mk-site .mk-textlink svg {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--dur-med, 160ms) var(--ease-out);
+}
+
+.mk-site .mk-textlink:hover svg {
+  transform: translateX(3px);
+}
+
+/* --- Header ----------------------------------------------------------------- */
+
+/* 64px including the rule: the border is drawn inset, so the rendered header
+   and the --nav-h token agree. */
+.mk-site .mk-header {
+  box-sizing: border-box;
+  height: var(--nav-h);
+  border-bottom: 0;
+  box-shadow: inset 0 -1px 0 var(--border-default);
+  background: color-mix(in srgb, var(--surface-page) 85%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.mk-site .mk-header__inner {
+  height: var(--nav-h);
+  min-height: 0;
+  padding-block: 0;
+  gap: 24px;
+}
+
+.mk-site .mk-wordmark {
+  gap: 10px;
+  font-size: 20px;
+}
+
+.mk-site .mk-header__nav {
+  gap: 8px;
+  margin-inline-start: 0;
+}
+
+.mk-site .mk-header__nav a {
+  box-sizing: border-box;
+  height: 40px;
+  min-height: 0;
+  padding: 0 16px;
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: var(--weight-medium);
+  line-height: 21px;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.mk-site .mk-header__nav a:hover {
+  background: var(--surface-sunken);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.mk-site .mk-header__actions {
+  gap: 8px;
+}
+
+/* 36x36 icon buttons: language and theme. */
+.mk-site .mk-header__lang,
+.mk-site .theme-cycle {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.mk-site .mk-header__lang {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.04em;
+}
+
+.mk-site .mk-header__lang:hover,
+.mk-site .theme-cycle:hover {
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+}
+
+.mk-site .mk-header__nav a:focus-visible,
+.mk-site .mk-header__lang:focus-visible,
+.mk-site .theme-cycle:focus-visible,
+.mk-site .mk-footer a:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--surface-page),
+    0 0 0 4px var(--focus-ring-color);
+}
+
+.mk-site .theme-cycle svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* The nav pills fold away before the actions would collide with them. */
+@media (max-width: 900px) {
+  .mk-site .mk-header__nav {
+    display: none;
+  }
+}
+
+/* Phones: the wordmark, the language switch, the theme toggle and one call to
+   action. Sign in moves to the footer. The 480px rules in the older block
+   above shrink the header pieces; they are reset here to the canonical sizes. */
+@media (max-width: 480px) {
+  .mk-site .mk-header__inner.mk-header__inner {
+    gap: 8px;
+  }
+
+  .mk-site .mk-header__actions.mk-header__actions {
+    gap: 4px;
+  }
+
+  .mk-site .mk-header__lang.mk-header__lang {
+    min-width: 36px;
+    padding: 0;
+  }
+
+  .mk-site .mk-header .mk-btn {
+    padding: 0 16px;
+    font-size: 14px;
+  }
+
+  .mk-site .mk-header .mk-btn--quiet {
+    display: none;
+  }
+
+  .mk-site .mk-wordmark.mk-wordmark {
+    font-size: 20px;
+    gap: 8px;
+  }
+}
+
+/* Tap targets reach 44px on a finger without changing what is drawn: the hit
+   area grows through a transparent pseudo-element.
+
+   Gated on the pointer, not the width: a 768px tablet is a coarse pointer too,
+   and the old max-width:640px gate left every control at its painted size there.
+
+   The inset is measured from the PADDING box, and each of these controls has a
+   1px border, so the inset is (44 - painted)/2 + 1:
+     36px icon buttons (lang, theme) -> 34px padding box -> -5px
+     40px .mk-btn                    -> 38px padding box -> -3px
+   The old -4px produced 42px on the icon buttons. On .mk-btn it produced 46px,
+   which cleared 44 but reached further into the gap than it needed to. */
+@media (pointer: coarse) {
+  .mk-site .mk-header__lang::after,
+  .mk-site .theme-cycle::after,
+  .mk-site .mk-header .mk-btn::after,
+  .mk-site .mk-wordmark::after {
+    content: "";
+    position: absolute;
+  }
+
+  .mk-site .mk-header__lang::after,
+  .mk-site .theme-cycle::after {
+    inset: -5px;
+  }
+
+  .mk-site .mk-header .mk-btn {
+    position: relative;
+  }
+
+  .mk-site .mk-header .mk-btn::after {
+    inset: -3px;
+  }
+
+  /* The wordmark is a 20px line of type — the smallest target on the page and
+     the only one with no hit-area extension at all. Vertical only: the lockup
+     is already far wider than 44px, and growing it sideways would reach over
+     the nav beside it. */
+  .mk-site .mk-wordmark {
+    position: relative;
+  }
+
+  .mk-site .mk-wordmark::after {
+    inset: -12px 0;
+  }
+}
+
+/* At <=480px the action row packs to a 4px gap, which is narrower than the two
+   44px boxes either side of it need. Touch only, and only where the row is
+   already tight: it buys 4px out of the ~70px of slack the header has at
+   375px, and nothing else in the row moves. */
+@media (pointer: coarse) and (max-width: 480px) {
+  .mk-site .mk-header__actions.mk-header__actions {
+    gap: var(--space-2);
+  }
+}
+
+/* --- Footer ----------------------------------------------------------------- */
+
+.mk-site .mk-footer {
+  border-top: 1px solid var(--border-default);
+  background: var(--surface-subtle);
+  padding-block: 56px 32px;
+}
+
+.mk-footer__top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 24px clamp(40px, 6vw, 88px);
+}
+
+.mk-footer__brand {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  max-width: 360px;
+}
+
+.mk-footer__tagline {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.mk-footer__col {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.mk-footer__col h2 {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: var(--weight-semibold);
+  line-height: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.mk-footer__col ul {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mk-site .mk-footer__col a {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+  text-decoration: none;
+}
+
+.mk-site .mk-footer__col a:hover {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.mk-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-default);
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 19.5px;
+}
+
+.mk-footer__bottom p {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .mk-footer__top {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+
+  /* A 21px text link is not a finger target; the row is 44px tall on a phone. */
+  .mk-site .mk-footer__col a {
+    min-height: 44px;
+  }
+
+  .mk-footer__col ul {
+    gap: 0;
+  }
+}
+
+/* --- Selection timeline --------------------------------------------------- */
+
+/* The signature element. Structure: a white band, a rule along its bottom edge
+   standing for the whole episode, and one block per selected moment sitting on
+   that rule. Width is duration to scale, height is the score. */
+.mk-timeline {
+  margin: 0;
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(var(--space-4), 3vw, var(--space-8));
+  display: grid;
+  gap: var(--space-4);
+}
+
+.mk-timeline__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+/* The hover and focus readout. It always says something, so revealing a moment
+   swaps text rather than inserting it and the band never shifts. Hidden from
+   assistive technology on purpose: the moment's own button already announces
+   every value in here, and a live region would say all of it twice. */
+.mk-timeline__readout {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  min-height: var(--space-5);
+}
+
+/* Two step buttons, the finger-sized way to move between moments: the blocks
+   below are too close together to each carry a 24px target without
+   overlapping (12px apart at the tightest, on a 768px screen). Drawn at the
+   control height, which Meridian raises to 44px on a coarse pointer, and drawn
+   square so both axes grow, with the 8px gap kept between them. */
+.mk-timeline__steps {
+  display: flex;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+}
+
+.mk-timeline__step {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: var(--control-h-md);
+  height: var(--control-h-md);
+  padding: 0;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  background: var(--surface-card);
+  color: var(--text-primary);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+
+.mk-timeline__step:hover {
+  background: var(--surface-sunken);
+}
+
+.mk-timeline__step:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.mk-timeline__step[aria-disabled="true"] {
+  color: var(--text-muted);
+  cursor: default;
+}
+
+@media (pointer: coarse) {
+  .mk-timeline__step {
+    width: var(--tap-min);
+    height: var(--tap-min);
+  }
+}
+
+.mk-timeline__readout b {
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.mk-timeline__band {
+  position: relative;
+  height: clamp(96px, 14vw, 144px);
+}
+
+/* The whole episode. --border-strong resolves to sand-300 in light, and remaps
+   in dark rather than staying a bright line on a dark page. */
+.mk-timeline__rule {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--border-strong);
+}
+
+.mk-timeline__track {
+  position: absolute;
+  inset: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mk-timeline__slot {
+  position: absolute;
+  bottom: 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  min-width: 3px;
+}
+
+/* --brand-500 on --surface-card measures 3.0:1, which is the WCAG floor for a
+   graphical object. It is also not the only channel: every value a block encodes
+   is in the readout, in the button's own label, and in the caption. */
+.mk-timeline__moment {
+  position: relative;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 2px 2px 0 0;
+  background: var(--brand-500);
+  cursor: pointer;
+  transform-origin: bottom center;
+  transition: background var(--dur-fast) var(--ease-out);
+  animation: mk-timeline-rise 170ms var(--ease-out) backwards;
+  animation-delay: calc(var(--mk-index, 0) * 7ms);
+  /* Not a pointer target. A block is 4 to 22px wide and its neighbour can be
+     12px away, so no per block target can reach 24px without landing on the
+     next one. The band takes every tap and hover and maps it by time
+     (SelectionTimeline.tsx), and the step buttons above are the full size
+     control. Keyboard focus still lands on the blocks. */
+  pointer-events: none;
+}
+
+.mk-timeline__moment--active,
+.mk-timeline__moment:focus-visible {
+  background: var(--brand-700);
+}
+
+/* The ramp is fixed, so the semantic tokens cannot do this one: --brand-700 is
+   a step DOWN, which reads as emphasis on the light page and as a block fading
+   into the card on the dark one (2.4:1 against --surface-card, measured). The
+   dark theme moves the same distance up the ramp instead. */
+[data-theme="dark"] .mk-timeline__moment--active,
+[data-theme="dark"] .mk-timeline__moment:focus-visible {
+  background: var(--brand-300);
+}
+
+.mk-timeline__moment:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  /* Lifts the ring over the neighbours that would otherwise clip it. */
+  z-index: 1;
+}
+
+/* 32 blocks x 7ms plus the 170ms each one takes is a 394ms sweep: the episode
+   scrubbing past once, left to right. It is the only orchestrated motion on the
+   site. */
+@keyframes mk-timeline-rise {
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+}
+
+/* Meridian's base sheet already collapses animation durations under this query.
+   Stated again here because the reveal is the one piece of motion this design
+   has, and it should not depend on another file's blanket rule to be safe. */
+@media (prefers-reduced-motion: reduce) {
+  .mk-timeline__moment {
+    animation: none;
+  }
+}
+
+.mk-timeline__ends {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.mk-timeline__caption {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}
+
+/* ==========================================================================
+   Signed-in layer, everything below is prefixed `app-`
+   ==========================================================================
+
+   The dashboard and the signed-out site are one product, so the app screens
+   borrow the marketing layer's register rather than inventing a second one:
+   `.mk-display-md` for a page title, `.mk-eyebrow` for a label above it, and
+   `.mk-measured` for every value a machine measured. Only the things the
+   marketing layer has no equivalent for live here.
+
+   Same three rules apply. Mono is semantic. The caramel ramp is rationed to the
+   one primary action on a screen. Nothing animates.
+   -------------------------------------------------------------------------- */
+
+/* --- Page heads ----------------------------------------------------------- */
+
+/* One rhythm for every screen head: eyebrow, title, one line of prose. The
+   title carries `.mk-display-md`; this owns the spacing between the three so no
+   screen reaches for a margin of its own. */
+.app-head {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.app-head__lede {
+  color: var(--text-secondary);
+  font-size: var(--text-md);
+  line-height: var(--leading-normal);
+  max-width: 64ch;
+  margin: 0;
+}
+
+/* Title on one side, the screen's single action on the other. Wraps rather than
+   crushing the button at 360px. */
+.app-head-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* --- Top bar -------------------------------------------------------------- */
+
+/* Identity on the left, account on the right. Meridian's TopNav gives a leading
+   slot, a spacer and a trailing slot, which is exactly that split, so the bar is
+   two groups rather than a row of equal-weight items. */
+.topbar__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.topbar__wordmark {
+  font-size: var(--text-xl);
+}
+
+.topbar__rule {
+  width: 1px;
+  height: var(--space-5);
+  background: var(--border-default);
+  flex: none;
+}
+
+.topbar__workspace {
+  display: grid;
+  gap: 0;
+  min-width: 0;
+  line-height: var(--leading-snug);
+}
+
+.topbar__workspace-name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The balance reads as a labelled measurement, not a chip: the label is the
+   quiet part and the number is the part someone came to check. */
+.topbar__credits {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.topbar__credits:hover {
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.topbar__credits:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.topbar__credits-label {
+  font-size: var(--text-2xs);
+  font-family: var(--font-mono);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.topbar__credits-value {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+}
+
+/* Status colour, used as status: an empty balance is the one state where the
+   next action fails, so it says so. */
+.topbar__credits-value--empty {
+  color: var(--warning-600);
+}
+
+/* --- Primary nav ---------------------------------------------------------- */
+
+/* The nav sat edge to edge while the content below it was centred in a 1200px
+   column, so the current tab never lined up with anything. */
+.nav__inner {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* The attribute is repeated to raise specificity without changing what matches:
+   Meridian injects components.css at runtime, so it lands after this file and
+   would win a tie against `.nav a`. */
+.nav a[aria-current="page"][aria-current="page"] {
+  background: transparent;
+  color: var(--text-primary);
+  font-weight: var(--weight-semibold);
+  /* Ink, not caramel. The accent is spent on the screen's primary action, and a
+     second caramel object in the same viewport breaks the rationing. */
+  box-shadow: inset 0 -2px 0 0 var(--text-primary);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+/* --- Clip shelf ----------------------------------------------------------- */
+
+/* Clips are 9:16, so they tile narrower than a project card. Auto-fit at 176px
+   makes the grid read as a shelf of clips rather than a list of rows, and still
+   drops to one column at 360px. */
+.clip-shelf {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 176px), 1fr));
+}
+
+.clip-card__media {
+  position: relative;
+}
+
+/* On the media, so it reads against the frame it describes rather than as one
+   more line of metadata underneath. --text-on-media is the token for exactly
+   this and does not remap with the theme, because the frame does not. */
+.clip-card__duration {
+  position: absolute;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  background: rgb(0 0 0 / 0.66);
+  color: var(--text-on-media);
+  font-size: var(--text-2xs);
+  line-height: var(--leading-normal);
+}
+
+.clip-card__status {
+  position: absolute;
+  left: var(--space-2);
+  top: var(--space-2);
+}
+
+.clip-card__body {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.clip-card__title {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+  color: var(--text-primary);
+  /* Two lines, then ellipsis: a title that ran to four lines pushed every card
+     in the row taller than the clip it was describing. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.clip-card__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.clip-card__category {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The score is the number the product's whole claim rests on, so it is set as a
+   measurement and not as a badge. */
+.clip-card__score {
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+  flex: none;
+}
+
+/* --- Pipeline stages ------------------------------------------------------ */
+
+/* Deliberately not Meridian's Steps. Steps models progress as one `current`
+   index, so every stage before it is done and every stage after it is pending.
+   This pipeline has five states per stage and two of them, failed and skipped,
+   have no index that expresses them: a failed render would draw as a plain grey
+   "not started yet" directly beneath a red failure Alert. The rail below is the
+   same shape, with the state read from the API's own phase record.
+
+   Numbered because the pipeline genuinely is an ordered sequence. Nothing else
+   in the app is numbered. */
+.stages {
+  display: grid;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.stage {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--space-1) var(--space-3);
+  align-items: baseline;
+}
+
+/* Flex rather than grid: the connecting line takes whatever height the row has
+   left over, which is `flex: 1` and has no grid equivalent that does not need
+   the row height stated up front. */
+.stage__rail {
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: stretch;
+  gap: var(--space-1);
+}
+
+.stage__marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-card);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  line-height: 1;
+  flex: none;
+}
+
+.stage__line {
+  width: 1.5px;
+  flex: 1;
+  min-height: var(--space-4);
+  background: var(--border-default);
+  border-radius: var(--radius-full);
+}
+
+.stage:last-child .stage__line {
+  visibility: hidden;
+}
+
+.stage__name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+}
+
+.stage__note {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.stage__detail {
+  grid-column: 2 / span 2;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  padding-bottom: var(--space-3);
+}
+
+/* A finished stage is ink filled, the running one is ink outlined and bolder,
+   and a failed one is the only coloured marker on the card. */
+.stage--done .stage__marker {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.stage--done .stage__line {
+  background: var(--accent);
+}
+
+.stage--done .stage__name {
+  color: var(--text-primary);
+}
+
+.stage--active .stage__marker {
+  border-color: var(--accent);
+  color: var(--text-primary);
+  border-width: 2px;
+}
+
+.stage--active .stage__name {
+  color: var(--text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+.stage--failed .stage__marker {
+  border-color: var(--danger-600);
+  color: var(--danger-600);
+}
+
+.stage--failed .stage__name,
+.stage--failed .stage__note {
+  color: var(--danger-600);
+}
+
+.stage--skipped .stage__name,
+.stage--skipped .stage__marker {
+  opacity: 0.65;
+}
+
+/* --- Sign in -------------------------------------------------------------- */
+
+/* The signed-out site's register, at the one size that fits a 26rem column:
+   the wordmark, a display heading and a single line of prose. */
+.signin {
+  width: 100%;
+  max-width: 26rem;
+  margin: clamp(var(--space-8), 8vw, var(--space-16)) auto;
+  display: grid;
+  gap: var(--space-5);
+}
+
+.signin__head {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+
+.signin__form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+/* Branded 404 on the signed-out site. */
+.mk-notfound {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  padding-block: 48px;
+  text-align: center;
+}
+
+.mk-notfound__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+/* At phone width the two actions stack and fill the row, the same way the
+   landing hero's CTA pair does below 640. */
+@media (max-width: 640px) {
+  .mk-notfound__actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* Footer lockup: 20px mark box with an 8px gap to the wordmark (nav is 24 / 10).
+   Declared last so it wins over the .mk-site gap and the <=480px nav glyph size. */
+.mk-footer .mk-footer__brand .mk-wordmark {
+  gap: 8px;
+}
+
+.mk-footer .mk-footer__brand .mk-wordmark .brand-mark__glyph {
+  width: 25.24px;
+  height: 15.85px;
+}

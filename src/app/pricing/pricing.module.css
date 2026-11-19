@@ -1,0 +1,116 @@
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  margin-top: 2rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid var(--mk-border, rgba(0, 0, 0, 0.12));
+  border-radius: 0.75rem;
+  /* Meridian's own surface token, not a private --mk-surface that was never
+     defined: the fallback #fff meant every card stayed white in dark mode with
+     light text on it, which is how this page became unreadable. */
+  background: var(--surface-card);
+  color: var(--text-primary);
+}
+
+.tier {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.priceIdr {
+  font-size: 0.95rem;
+  opacity: 0.75;
+}
+
+.credits {
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+.features {
+  margin: 0.25rem 0 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+/* A feature that is listed but not shippable yet: dimmed, and never mistaken
+   for one of the lines above it. See UNSHIPPED_FEATURES in PricingScreen.tsx. */
+.featureSoon {
+  opacity: 0.6;
+}
+
+.comingSoon {
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--mk-border, rgba(0, 0, 0, 0.12));
+  border-radius: 999px;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.cta {
+  margin-top: auto;
+  display: inline-block;
+  text-align: center;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--brand-700, #7c4a1e);
+  color: var(--brand-contrast, #fff);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.faqHeading {
+  margin-bottom: 1.5rem;
+}
+
+.faq {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin: 0;
+  max-width: 44rem;
+}
+
+.faqItem {
+  border-top: 1px solid var(--mk-border, rgba(0, 0, 0, 0.12));
+  padding-top: 1.25rem;
+}
+
+.faqQuestion {
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.faqAnswer {
+  margin: 0;
+  opacity: 0.85;
+  line-height: 1.55;
+}
+
+.provisionalNote {
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}

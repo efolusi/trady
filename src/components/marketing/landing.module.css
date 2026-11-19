@@ -1,0 +1,806 @@
+/*
+ * Layout for the landing page only.
+ *
+ * A CSS module rather than more rules in globals.css: globals.css is the shared
+ * marketing layer that every signed-out page reads, and none of what follows is
+ * reusable enough to earn a place in it. Same discipline applies here as there,
+ * every value is a Meridian token, so both themes and both densities follow.
+ *
+ * Nothing in this file styles a Meridian component's own element. Meridian
+ * injects components.css at runtime, so it lands after this stylesheet and wins
+ * any single-class tie; these classes only ever sit on elements this page owns.
+ */
+
+/* --- Shared section furniture --------------------------------------------- */
+
+/* Eyebrow, heading and one paragraph, as one block above the content. */
+.head {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 48px;
+}
+
+@media (max-width: 640px) {
+  .head {
+    margin-bottom: 32px;
+  }
+}
+
+/* The header is sticky, so an in-page jump would otherwise land with the
+   heading tucked underneath it. */
+.anchored {
+  scroll-margin-top: var(--nav-h, 64px);
+}
+
+/* --- Hero ----------------------------------------------------------------- */
+
+/* The hero sits on the page surface like efolusi.com's: copy first, one filled
+   call to action, then the product's evidence in a card below it. */
+.heroSection {
+  padding-block: clamp(48px, 7vh, 80px) clamp(56px, 8vh, 88px);
+}
+
+.hero {
+  display: grid;
+  gap: 48px;
+}
+
+.heroCopy {
+  display: grid;
+  justify-items: start;
+}
+
+.heroCopy :global(.mk-eyebrow) {
+  margin-bottom: 16px;
+}
+
+.heroCopy :global(.mk-lede) {
+  margin: 22px 0 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin-top: 30px;
+}
+
+/* Phone: the primary pill runs full width and keeps its 52px height; the text
+   link sits centred under it. */
+@media (max-width: 640px) {
+  .heroCopy,
+  .actions {
+    width: 100%;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actions > * {
+    justify-content: center;
+  }
+}
+
+/* --- What comes out ------------------------------------------------------- */
+
+/* The clip sits beside its description on a desktop and above it on a phone.
+   A 9:16 frame is tall, so it is capped rather than allowed to fill half of a
+   1200px row. */
+.output {
+  display: grid;
+  gap: clamp(var(--space-8), 4vw, var(--space-12));
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  align-items: start;
+}
+
+@media (max-width: 760px) {
+  .output {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .clip {
+    max-width: 320px;
+  }
+}
+
+.clip {
+  /* A 9:16 frame in a wide column becomes a wall of video. Capped and
+     centred so it reads as a phone screen beside the copy, not as a takeover. */
+  margin: 0 auto;
+  max-width: 300px;
+  width: 100%;
+  display: grid;
+  gap: var(--space-3);
+}
+
+/* --media-* tones are fixed dark in both themes on purpose: they exist to sit
+   under imagery, which is exactly what a clip frame is. */
+.clipFrame {
+  background: var(--media-backdrop);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.clipInner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--space-4);
+  gap: var(--space-4);
+}
+
+.clipStamp {
+  align-self: flex-start;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--media-scrim-soft);
+  color: var(--text-on-media-muted);
+  font-size: var(--text-2xs);
+}
+
+/* Word by word: every word of the line is on screen, and the one being spoken
+   is the bright one. No accent here, the caramel is rationed to the timeline
+   and the primary call to action. */
+.clipCaption {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.32em;
+  font-family: var(--font-sans);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+  color: var(--text-on-media-muted);
+  text-wrap: balance;
+}
+
+.clipWordSpoken {
+  color: var(--text-on-media);
+}
+
+.clipCaptionFigure {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  margin: 0;
+}
+
+/* The clip's own measurements, beside it rather than inside the frame. */
+.specs {
+  margin: var(--space-6) 0 0;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-2) var(--space-6);
+  border-top: 1px solid var(--border-default);
+  padding-top: var(--space-6);
+}
+
+.specs dt {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.specs dd {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+}
+
+/* --- Credits -------------------------------------------------------------- */
+
+.creditsNote {
+  margin-top: var(--space-6);
+  color: var(--text-secondary);
+  font-size: var(--text-md);
+}
+
+/* --- Closing band --------------------------------------------------------- */
+
+.close {
+  display: grid;
+  gap: 16px;
+  justify-items: center;
+  text-align: center;
+}
+
+.close :global(h2.mk-display-lg) {
+  max-width: 620px;
+  font-size: clamp(30px, 4vw, 46px);
+}
+
+.close :global(.mk-prose) {
+  max-width: 480px;
+}
+
+.close :global(.mk-btn) {
+  margin-top: 16px;
+}
+
+/* The selection figure is a panel card: 24px radius, hairline, no resting
+   shadow. It overrides the global .mk-timeline card, which the app shares. */
+.player :global(.mk-timeline) {
+  border-radius: 24px;
+  box-shadow: none;
+  padding: 28px;
+}
+
+@media (max-width: 640px) {
+  .player :global(.mk-timeline) {
+    padding: 20px;
+  }
+}
+
+/* --- Hero spec chips: 1–3 word noun phrases ------------------------------- */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  background: var(--surface-card);
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* --- The clip rail: every finished 9:16 clip, slid through sideways -------- */
+
+/* A rail rather than a grid, because the evidence outgrew four cards. A grid
+   of twelve is a wall to scroll past; a rail shows four and says there are
+   more, which is the same promise the product makes about a long video. */
+.clipRail {
+  position: relative;
+}
+
+.clipStack {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 2px;
+  /* Room for the card's focus ring and shadow, which a clipped overflow eats. */
+  padding: 2px 2px var(--space-2);
+  scrollbar-width: none;
+}
+
+.clipStack::-webkit-scrollbar {
+  display: none;
+}
+
+.stackCard {
+  margin: 0;
+  display: grid;
+  gap: var(--space-3);
+  scroll-snap-align: start;
+  /* Four across on a wide rail, sized so the fifth peeks and the rail reads
+     as scrollable without an instruction telling anyone that it is. */
+  flex: 0 0 calc((100% - var(--space-4) * 3) / 4);
+  min-width: 210px;
+}
+
+@media (max-width: 900px) {
+  .stackCard {
+    flex-basis: calc((100% - var(--space-4)) / 2);
+  }
+}
+
+@media (max-width: 520px) {
+  .stackCard {
+    flex-basis: 78%;
+  }
+}
+
+/* The two arrows. Hidden from the reader when the rail has nowhere to go that
+   way, so a dead control is never offered. */
+.railArrow {
+  position: absolute;
+  top: calc(50% - 44px);
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  box-sizing: border-box;
+  border: 1px solid var(--border-default);
+  background: var(--surface-card);
+  color: var(--text-primary);
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.railArrow:hover {
+  background: var(--surface-sunken);
+}
+
+.railArrow:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--surface-page),
+    0 0 0 4px var(--focus-ring-color);
+}
+
+.railArrowPrev {
+  left: calc(var(--space-4) * -1);
+}
+
+.railArrowNext {
+  right: calc(var(--space-4) * -1);
+}
+
+.railArrowOff {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Touch already scrolls; arrows there are chrome over the picture. */
+@media (hover: none) {
+  .railArrow {
+    display: none;
+  }
+}
+
+.stackPoster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* The play affordance: quiet until hovered, so the poster reads as an image
+   with an offer rather than as a control competing for attention. */
+.stackPlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  color: #f6efe3;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.5);
+  opacity: 0.82;
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.stackFrame:hover .stackPlay {
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+/* --- The dialog a clip opens in ------------------------------------------ */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  /* Above the sticky header, which owns --z-sticky. A modal that leaves the
+     navigation crisp and reachable above it reads as a panel stuck to the
+     page rather than as a layer over the whole thing. */
+  z-index: 999;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  background: rgb(20 14 9 / 0.82);
+  backdrop-filter: blur(4px);
+}
+
+.lightboxInner {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
+  max-height: 100%;
+}
+
+.lightboxVideo {
+  max-height: min(78vh, 900px);
+  max-width: 100%;
+  border-radius: var(--radius-lg);
+  background: #000;
+}
+
+.lightboxMeta {
+  display: grid;
+  gap: 2px;
+  justify-items: center;
+  text-align: center;
+  color: #f6efe3;
+}
+
+.lightboxClose {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgb(246 239 227 / 0.24);
+  background: rgb(36 26 17 / 0.6);
+  color: #f6efe3;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Which language this clip was spoken in — the answer to the question an
+   Indonesian buyer asks first, stated on the evidence itself. */
+.stackLang {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 2;
+  background: rgb(36 26 17 / 0.72);
+  color: #f6efe3;
+  border-radius: var(--radius-sm);
+  padding: 2px 7px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+}
+
+.stackFrame:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--surface-page),
+    0 0 0 4px var(--focus-ring-color);
+}
+
+.stackFrame {
+  /* A button, but it looks like a frame: no chrome of its own. */
+  border: 1px solid rgb(246 239 227 / 0.1);
+  padding: 0;
+  cursor: pointer;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  border-radius: var(--radius-lg);
+  background: radial-gradient(140% 110% at 50% 0%, #3a2c1c 0%, #241a11 70%);
+  position: relative;
+  overflow: hidden;
+}
+
+.stackScore {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  background: var(--brand-300);
+  color: var(--brand-950);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.stackCaption {
+  margin: 0 0 var(--space-6);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 0.3em;
+  row-gap: 0.15em;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--text-lg);
+  line-height: 1.25;
+  color: #f6efe3;
+}
+
+.stackWordLit {
+  background: var(--brand-300);
+  color: var(--brand-950);
+  border-radius: 0.18em;
+  padding: 0 0.14em;
+}
+
+.stackStamp {
+  position: absolute;
+  bottom: var(--space-3);
+  right: var(--space-3);
+  color: rgb(246 239 227 / 0.6);
+  font-size: var(--text-xs);
+}
+
+.stackMeta {
+  display: grid;
+  gap: 2px;
+}
+
+.stackTag {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.stackTitle {
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+}
+
+/* Kept immediately after .stackTitle, not up with the rest of the lightbox
+   rules: the dialog sits on a dark scrim, so the title has to win over
+   --text-primary, and a more specific selector only wins if it also comes
+   later in the file. */
+.lightboxMeta .stackTitle {
+  color: #f6efe3;
+}
+
+/* --- Capability rows: claim on one side, the product's evidence on the other */
+
+.capability {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 64px;
+  align-items: center;
+}
+
+.capability + .capability {
+  margin-top: 80px;
+}
+
+.capability:nth-child(even) > :first-child {
+  order: 2;
+}
+
+@media (max-width: 860px) {
+  .capability {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+
+  .capability + .capability {
+    margin-top: 64px;
+  }
+
+  .capability:nth-child(even) > :first-child {
+    order: 0;
+  }
+}
+
+.capabilityCopy {
+  display: grid;
+  gap: 14px;
+  align-content: center;
+}
+
+/* Feature title: 26px display, the efolusi feature-card scale. */
+.capabilityTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: clamp(22px, 2.2vw, 26px);
+  line-height: 1.2;
+  letter-spacing: var(--tracking-display);
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+/* Moment rows: the scored shortlist, set like a cue sheet. */
+.cueSheet {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.cueRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: 12px 16px;
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  background: var(--surface-card);
+}
+
+.cueTime {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  flex-shrink: 0;
+}
+
+.cueTitle {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: var(--weight-medium);
+}
+
+.cueScore {
+  background: var(--brand-300);
+  color: var(--brand-950);
+  border-radius: var(--radius-sm);
+  padding: 1px 8px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* The reframe diagram: 16:9 becomes 9:16, drawn, not described. */
+.reframe {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+}
+
+.reframeWide {
+  width: min(46%, 300px);
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  position: relative;
+}
+
+/* The crop the reframe keeps, lit inside the wide frame. */
+.reframeKeep {
+  position: absolute;
+  inset: 8% 36%;
+  border: 2px solid var(--brand-500);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--brand-500) 14%, transparent);
+}
+
+.reframeArrow {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.reframeTall {
+  width: min(22%, 120px);
+  aspect-ratio: 9 / 16;
+  border-radius: var(--radius-md);
+  background: radial-gradient(140% 110% at 50% 0%, #3a2c1c 0%, #241a11 70%);
+  display: grid;
+  place-items: end center;
+  padding: var(--space-3);
+}
+
+.reframeTall span {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--text-sm);
+  color: var(--brand-950);
+  background: var(--brand-300);
+  border-radius: 0.2em;
+  padding: 0 0.2em;
+}
+
+/* --- How it works: three human steps, walked left to right ---------------- */
+
+.steps3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 1020px) {
+  .steps3 {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+
+.step3 {
+  display: grid;
+  gap: 8px;
+  padding: 24px;
+  border: 1px solid var(--border-default);
+  border-radius: 24px;
+  background: var(--surface-card);
+  align-content: start;
+}
+
+.step3 h3 {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: var(--tracking-display);
+  color: var(--text-primary);
+}
+
+.step3 p {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.step3Time {
+  font-size: 12px;
+  font-weight: var(--weight-semibold);
+  line-height: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* --- FAQ: native disclosure, no JS, findable by in-page search ------------ */
+
+.faq {
+  display: grid;
+  gap: 8px;
+}
+
+.faqItem {
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  background: var(--surface-card);
+}
+
+.faqQuestion {
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--text-primary);
+  list-style: none;
+  box-sizing: border-box;
+  min-height: 56px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.faqQuestion:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--surface-page),
+    0 0 0 4px var(--focus-ring-color);
+}
+
+/* The default triangle differs per browser; one drawn glyph reads the same
+   everywhere and rotates to say open. */
+.faqQuestion::-webkit-details-marker {
+  display: none;
+}
+
+.faqQuestion::after {
+  content: "+";
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  color: var(--text-muted);
+  transition: transform var(--dur-fast, 150ms) ease;
+  flex-shrink: 0;
+}
+
+.faqItem[open] .faqQuestion::after {
+  transform: rotate(45deg);
+}
+
+.faqAnswer {
+  margin: 0;
+  padding: 0 20px 20px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.65;
+  max-width: 62ch;
+}

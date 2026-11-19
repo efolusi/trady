@@ -1,0 +1,33 @@
+{
+  "name": "trady",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@efolusi/meridian": "1.21.10",
+    "next": "15.5.24",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.7",
+    "@opennextjs/cloudflare": "1.20.17",
+    "wrangler": "4.164.0"
+  },
+  "type": "module",
+  "engines": {
+    "node": "26.13.1"
+  },
+  "packageManager": "pnpm@11.24.0"
+}
