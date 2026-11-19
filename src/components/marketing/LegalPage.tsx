@@ -18,7 +18,7 @@ import { Section } from './Section'
  */
 
 /** The date shown on both documents. One constant so they cannot disagree. */
-export const LEGAL_LAST_UPDATED = '2026-10-16'
+export const LEGAL_LAST_UPDATED = '2026-11-19'
 
 /**
  * A real-world detail that has not been decided yet.

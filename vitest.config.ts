@@ -18,6 +18,8 @@ export default defineConfig({
     },
   },
   test: {
+    // Same-origin API in tests, so request paths stay relative.
+    env: { NEXT_PUBLIC_API_ORIGIN: '' },
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
   },
 })

@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { isAppPath } from './lib/app-routes'
+import { buildCsp, generateNonce } from './lib/csp'
 import { appUrl, siteUrl } from './lib/site'
 
 /**
@@ -18,6 +19,28 @@ const YEAR = 60 * 60 * 24 * 365
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // The app moved to its own host: old links to app routes follow it there.
+  if (isAppPath(pathname) || pathname === '/signin') {
+    return NextResponse.redirect(appUrl(`${pathname}${request.nextUrl.search}`), 308)
+  }
+
+  // Every page gets a CSP with a fresh nonce. Next reads it from the request
+  // header and nonces its own scripts; the layout reads x-nonce for the theme
+  // script. Development uses no nonce (see lib/csp.ts).
+  const isProduction = process.env.NODE_ENV === 'production'
+  const nonce = isProduction ? generateNonce() : undefined
+  const csp = buildCsp({ nonce, isProduction })
+  const requestHeaders = new Headers(request.headers)
+  if (nonce) {
+    requestHeaders.set('x-nonce', nonce)
+    requestHeaders.set('content-security-policy', csp)
+  }
+  const next = () => {
+    const response = NextResponse.next({ request: { headers: requestHeaders } })
+    response.headers.set('Content-Security-Policy', csp)
+    return response
+  }
+
   // Remember whichever language page is being read, including a manual switch,
   // and tell the render which language the path was in. The header is what the
   // root layout reads to set `<html lang>`: a first-time reader of /id/harga
@@ -26,23 +49,16 @@ export function middleware(request: NextRequest) {
   const onLanguagePath = /^\/(en|id)(?=\/|$)/.exec(pathname)
   if (onLanguagePath) {
     const current = onLanguagePath[1] as 'en' | 'id'
-    const requestHeaders = new Headers(request.headers)
     requestHeaders.set('x-locale', current)
-    const response = NextResponse.next({ request: { headers: requestHeaders } })
+    const response = next()
     if (request.cookies.get(COOKIE)?.value !== current) {
       response.cookies.set(COOKIE, current, { maxAge: YEAR, path: '/', sameSite: 'lax' })
     }
     return response
   }
 
-  // The app moved to its own host: old links to app routes follow it there.
-  if (isAppPath(pathname) || pathname === '/signin') {
-    return NextResponse.redirect(appUrl(`${pathname}${request.nextUrl.search}`), 308)
-  }
+  if (pathname !== '/') return next()
 
-  if (pathname !== '/') return NextResponse.next()
-
-  // A session means this is the dashboard, not a landing page.
   const stored = request.cookies.get(COOKIE)?.value
   const locale =
     stored === 'en' || stored === 'id'
@@ -63,20 +79,10 @@ export function middleware(request: NextRequest) {
   return NextResponse.redirect(url, 307)
 }
 
-// Literals, because Next reads this statically. `:path*` matches zero or more
-// segments, so '/usage/:path*' covers the bare '/usage' too, the same way
-// '/id/:path*' covers '/id'. Keep the app entries in step with APP_PREFIXES;
-// the middleware test fails if they drift.
+// Every page runs this, for the CSP; static files and images do not need it.
+// A literal, because Next reads it statically.
 export const config = {
   matcher: [
-    '/',
-    '/en/:path*',
-    '/id/:path*',
-    '/projects/:path*',
-    '/clips/:path*',
-    '/usage/:path*',
-    '/social/:path*',
-    '/editor/:path*',
-    '/signin',
+    '/((?!_next/static|_next/image|brand/|favicon.ico|icon.svg|apple-icon.png|icon-192.png|icon-512.png|manifest.webmanifest|robots.txt|sitemap.xml|llms.txt|opengraph-image).*)',
   ],
 }

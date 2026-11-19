@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { APP_PREFIXES, safeReturnPath } from '../lib/app-routes'
+import { safeReturnPath } from '../lib/app-routes'
 import { config, middleware } from '../middleware'
 
 /**
@@ -104,20 +104,32 @@ describe('landing language routing', () => {
     expect(res.cookies.get('lang')).toBeUndefined()
   })
 
-  it('matches only the routes it is meant to touch', () => {
-    // Narrowing it to exclude '/' turns the geo-detect back off. The two
-    // language subtrees are in so that every page under them knows its
-    // language, not just the language root. The app prefixes are in so a
-    // signed-out visitor never gets the app shell; nothing else is, so pricing,
-    // legal pages, static files and the API never run this. /signin is in so
-    // an old link follows the app to its own host.
-    expect(config.matcher).toEqual([
-      '/',
-      '/en/:path*',
-      '/id/:path*',
-      ...APP_PREFIXES.map((prefix) => `${prefix}/:path*`),
-      '/signin',
-    ])
+  it('runs on every page but not on static files', () => {
+    const [pattern] = config.matcher
+    const re = new RegExp(`^${pattern}$`)
+    for (const path of ['/', '/en', '/id/pricing', '/pricing', '/terms', '/nope']) expect(re.test(path), path).toBe(true)
+    for (const path of ['/_next/static/x.js', '/brand/demo-clip.mp4', '/robots.txt', '/sitemap.xml', '/favicon.ico']) {
+      expect(re.test(path), path).toBe(false)
+    }
+  })
+
+  it('sends a CSP on every page, without unsafe-inline scripts in production', () => {
+    const original = process.env.NODE_ENV
+    ;(process.env as Record<string, string>).NODE_ENV = 'production'
+    process.env.NEXT_PUBLIC_API_ORIGIN = 'https://api.example.test'
+    try {
+      const csp = middleware(request('/en/pricing')).headers.get('content-security-policy') ?? ''
+      expect(csp).toMatch(/script-src 'self' 'nonce-[A-Za-z0-9+/=]+'/)
+      expect(csp).not.toMatch(/script-src[^;]*unsafe-inline/)
+      for (const part of ["frame-ancestors 'none'", "object-src 'none'", "base-uri 'self'", "connect-src 'self' https://api.example.test"]) {
+        expect(csp).toContain(part)
+      }
+      const nonce = /'nonce-([^']+)'/.exec(csp)?.[1]
+      expect(middleware(request('/en')).headers.get('x-middleware-request-x-nonce')).not.toBe(nonce)
+    } finally {
+      ;(process.env as Record<string, string>).NODE_ENV = original ?? 'test'
+      process.env.NEXT_PUBLIC_API_ORIGIN = ''
+    }
   })
 
   it('tells the render which language the path was in', () => {

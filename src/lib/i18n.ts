@@ -405,7 +405,6 @@ const en: Dictionary = {
      *   OpenRouter for ASR and the LLM .env.example (OPENROUTER_ASR_MODEL, OPENROUTER_LLM_MODEL)
      *   ...reached through Relay       packages/pipeline/src/llm-endpoint.ts (RELAY_API_URL)
      *   Cloudflare in front, country   apps/web/src/middleware.ts (cf-ipcountry)
-     *   Sentry, server side, no PII    apps/api/src/observability.ts, packages/jobs/src/observability.ts
      *   link ingest with yt-dlp        packages/pipeline/src/ingest/source.ts
      *   Composio for channel connect   apps/api/src/adapters/composio-connector.ts (UI withheld,
      *                                  apps/web/src/lib/unshipped-features.ts)
@@ -491,10 +490,6 @@ const en: Dictionary = {
             { h3: 'Videos you add by link' },
             {
               p: 'When you add a video by pasting a link instead of uploading a file, our server downloads it from the site you linked, such as YouTube, Vimeo, Google Drive or Dropbox, using the open source tool yt-dlp. That site receives a request from our server for the video, and its own terms and privacy policy apply. Only link to videos you have the right to use.',
-            },
-            { h3: 'Error reports' },
-            {
-              p: 'When our API or our processing workers hit an error, a report goes to Sentry so we can fix it. A report holds the error itself, where in the service it happened, a request or job id and your workspace id. It is set up not to attach cookies, sign-in tokens or IP addresses.',
             },
             { h3: 'Channel connections' },
             {
@@ -959,10 +954,6 @@ const id: Dictionary = {
             { h3: 'Video yang Anda tambahkan lewat tautan' },
             {
               p: 'Saat Anda menambahkan video dengan menempel tautan alih-alih mengunggah berkas, server kami mengunduhnya dari situs yang Anda tautkan, misalnya YouTube, Vimeo, Google Drive, atau Dropbox, memakai alat open source yt-dlp. Situs itu menerima permintaan dari server kami untuk video tersebut, dan ketentuan serta kebijakan privasinya sendiri yang berlaku. Tautkan hanya video yang memang berhak Anda pakai.',
-            },
-            { h3: 'Laporan galat' },
-            {
-              p: 'Saat API atau worker pemrosesan kami mengalami galat, sebuah laporan dikirim ke Sentry agar kami bisa memperbaikinya. Laporan itu berisi galatnya, bagian layanan tempat galat terjadi, id permintaan atau id job, dan id workspace Anda. Laporan itu diatur agar tidak menyertakan cookie, token masuk, atau alamat IP.',
             },
             { h3: 'Koneksi kanal' },
             {

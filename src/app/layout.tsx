@@ -56,7 +56,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // `<html lang="en">`. Reading a header makes the document dynamic, which is
   // the price of having the attribute right in the FIRST response rather than
   // patched in after hydration.
-  const lang = dictionaries[localeFromHeader((await headers()).get(LOCALE_HEADER))].htmlLang
+  const headerList = await headers()
+  const lang = dictionaries[localeFromHeader(headerList.get(LOCALE_HEADER))].htmlLang
+  // The CSP nonce from middleware.ts; the inline theme script must carry it.
+  const nonce = headerList.get('x-nonce') ?? undefined
   return (
     // suppressHydrationWarning because the script below rewrites data-theme
     // before React hydrates, so the server's guess and the live DOM legitimately
@@ -66,7 +69,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* biome-ignore lint/security/noDangerouslySetInnerHtml: a blocking inline script is the
             only way to set the theme before first paint, and the content is a compile-time
             constant with no interpolated input. */}
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
         {children}

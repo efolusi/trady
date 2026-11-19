@@ -8,11 +8,11 @@
  */
 
 /**
- * Empty means same origin, which is the deployed shape: the API is served
- * behind the same host so the session cookie is first-party and no CORS
- * preflight sits in front of every request.
+ * The API is its own host: the site is a Worker on trady.efolusi.com, so a
+ * relative path would land on the site. Set NEXT_PUBLIC_API_ORIGIN to point
+ * elsewhere (an empty value means same origin, for local development).
  */
-export const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN ?? ''
+export const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN ?? 'https://trady-api.efolusi.com'
 
 /**
  * A development-only bearer token. Real sessions travel as a cookie, which is
