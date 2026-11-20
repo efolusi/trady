@@ -13,6 +13,6 @@
     { "pattern": "trady.efolusi.com", "zone_name": "efolusi.com" },
     { "pattern": "trady.efolusi.com/*", "zone_name": "efolusi.com" }
   ],
-  "workers_dev": true,
+  "workers_dev": false,
   "preview_urls": false
 }
